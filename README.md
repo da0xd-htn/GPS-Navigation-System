@@ -3,21 +3,23 @@ This Python project involves developing a GPS navigation application that allows
 
 
 # Project Structure:
-
+```bash
 GPS-System/
-├── maps/
-│   └── map.png                # The map of Setif
+
 ├── data/
-│   └── points_of_interest.csv # File for storing predefined points of interest
+│   └── coordinates.csv # File for storing predefined points of interest
 ├── src/
-│   ├── display_map.py         # Handles the map display GUI
+│   ├── app.py                 # Main flask app
 │   ├── algorithms.py          # Contains Dijkstra and Bellman-Ford algorithms
 │   ├── gui.py                 # Main GUI application logic
 │   ├── utils.py               # Helper functions (coordinate conversions, etc.)
 │   ├── search.py              # Search and filter functionality
 │   └── __init__.py            # Marks the folder as a Python module
-├── tests/
-│   └── test_algorithms.py     # Test cases for your algorithms
+├── templates/
+│   ├── index.html             # Main web page
+├── static/
 ├── venv/                      # Virtual environment
 ├── requirements.txt           # Project dependencies
 └── README.md                  # Project documentation
+└── .gitignore                 # .gitignore file
+```
