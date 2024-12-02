@@ -1,0 +1,115 @@
+/* Basic layout styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 120vh;
+    margin-top: 15px;
+}
+.sidebar {
+    width: 320px;
+    background-color: #f4f4f4;
+    border-right: 2px solid #f0cccc;
+    margin-left: -70px;
+}
+
+/* Add margin to buttons */
+.sidebar button {
+    margin-bottom: 10px; /* Adds spacing between buttons */
+}
+
+/* Add padding to list items in Points of Interest */
+.sidebar #poi-list li {
+    padding: 5px 0; /* Adds spacing around each list item */
+    border-bottom: 1px solid #ccc; /* Optional: Add a divider between items */
+}
+
+/* POI List Item Styles */
+.sidebar #poi-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+    list-style-type: none;
+}
+
+/* POI Link Styling */
+.sidebar #poi-list .poi-link {
+    text-decoration: none;
+    color: #007bff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* POI Name Styling */
+.sidebar #poi-list .poi-name {
+    font-size: 0.9em;
+    color: #555;
+}
+
+
+.clickable-header {
+    cursor: pointer;
+    color: #007bff;
+    padding: 10px 15px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.3s, border-color 0.3s;
+    width: fit-content;
+}
+
+.clickable-header:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.clickable-header i {
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.clickable-header.open i {
+    transform: rotate(180deg); /* Rotate the arrow when opened */
+}
+
+.add-poi-container form {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    padding-top: 10px;
+}
+
+
+.delete-btn {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #cc0000;
+}
+
+
+.map-container {
+    flex-grow: 1;
+    position: relative;
+    margin-right: -70px;
+    margin-left: 20px;
+
+}
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    margin-top: 500px;
+}

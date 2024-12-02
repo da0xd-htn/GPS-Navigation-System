@@ -18,6 +18,10 @@ GPS-System/
 ├── templates/
 │   ├── index.html             # Main web page
 ├── static/
+│   ├── css    
+│   │   └── style.css     
+│   ├── js    
+│   │   └── script.css   
 ├── venv/                      # Virtual environment
 ├── requirements.txt           # Project dependencies
 └── README.md                  # Project documentation
