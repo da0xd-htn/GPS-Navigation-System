@@ -21,21 +21,52 @@ document.getElementById('reset-map').addEventListener('click', function() {
 // Clear markers functionality
 document.getElementById('clear-markers').addEventListener('click', function() {
     markersLayer.clearLayers();
+    routingLayer.clearLayers();
 });
 
 // Initialize marker layer for points of interest
 var markersLayer = L.layerGroup().addTo(map);
 
+var routingLayer = L.layerGroup().addTo(map); // Separate layer for routes
+
+
 // Function to add markers
 function addMarker(lat, lon) {
     var marker = L.marker([lat, lon]).addTo(markersLayer);
-    marker.bindPopup("<b>Point of Interest</b>");
+    marker.bindPopup(`<b>Coordinates:</b><br>Lat: ${lat}<br>Lon: ${lon}`);
+}
+
+
+// Function to draw a route between two points with a unique color
+function drawRoute(start, end, color) {
+    // Use L.polyline instead of L.Routing.control for dynamic routing simulation
+    fetch(`https://router.project-osrm.org/route/v1/driving/${start.lon},${start.lat};${end.lon},${end.lat}?geometries=geojson`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.routes && data.routes.length > 0) {
+                var route = data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                L.polyline(route, {
+                    color: color,
+                    weight: 9,
+                    opacity: 1
+                }).addTo(routingLayer);
+            }
+        })
+        .catch(error => console.error('Error fetching route:', error));
+}
+
+// Generate random color
+function getRandomColor() {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 // Fetch coordinates from the backend and add to the map and sidebar
 fetch('/api/coordinates')
     .then(response => response.json())
     .then(data => {
+
+        var previousPoint = null;
+
         data.forEach(coord => {
             // Add marker to the map
             addMarker(coord.lat, coord.lon);
@@ -62,9 +93,20 @@ fetch('/api/coordinates')
             li.querySelector('.delete-btn').addEventListener('click', function () {
                 deletePoint(coord.name, li);
             });
+            // Draw route between the current and previous point with a unique color
+            if (previousPoint) {
+                var routeColor = getRandomColor();
+                drawRoute(previousPoint, coord, routeColor);
+            }
+
+            // Update the previous point
+            previousPoint = coord;           
         });
     })
     .catch(error => console.error('Error fetching coordinates:', error));
+
+// Store the last added point to check for pairing
+let lastAddedPoint = null;
 
 // Handle form submission to add a new point
 document.getElementById('add-poi-form').addEventListener('submit', function (e) {
@@ -118,6 +160,18 @@ document.getElementById('add-poi-form').addEventListener('submit', function (e) 
                     deletePoint(name, li);
                 });
 
+                // Check for the previous unpaired point
+                if (lastAddedPoint) {
+                    var routeColor = getRandomColor();
+                    drawRoute(lastAddedPoint, { lat: lat, lon: lon }, routeColor);
+                    
+                    // Clear lastAddedPoint after pairing
+                    lastAddedPoint = null;
+                } else {
+                    // Store the current point as the last added if no pair
+                    lastAddedPoint = { lat: lat, lon: lon };
+                }
+
                 // Clear form inputs
                 document.getElementById('add-poi-form').reset();
             }
@@ -127,6 +181,8 @@ document.getElementById('add-poi-form').addEventListener('submit', function (e) 
             alert("An error occurred while adding the point.");
         });
 });
+
+
 
 // Function to delete a point (both from the list and the CSV file)
 function deletePoint(name, liElement) {
@@ -243,3 +299,130 @@ document.querySelector('button[type="submit"]').addEventListener('click', functi
         alert("Please enter coordinates in the format: Latitude, Longitude.");
     }
 });
+
+
+
+// Function to enable clicking on the map to add markers and draw a route
+function enableClickToRoute(map) {
+    const tempMarkersLayer = L.layerGroup().addTo(map); // Temporary layer for click markers
+
+    map.on('click', function (e) {
+        // Add a marker to the temporary layer at the clicked location
+        const marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(tempMarkersLayer);
+
+        // Check the number of markers in the temporary layer
+        if (tempMarkersLayer.getLayers().length === 2) {
+            const markers = tempMarkersLayer.getLayers();
+            const point1 = markers[0].getLatLng();
+            const point2 = markers[1].getLatLng();
+
+            // Use Leaflet Routing Machine to draw the route
+            const routeControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(point1.lat, point1.lng),
+                    L.latLng(point2.lat, point2.lng)
+                ],
+                createMarker: function() { return null; }, // Disable routing machine's default markers
+                lineOptions: {
+                    styles: [{ color: 'blue', weight: 4, opacity: 0.7 }]
+                },
+                routeWhileDragging: false
+            }).addTo(map);
+
+            // After drawing a route, clear markers and route for new selections
+            map.on('click', function clearOldRoute() {
+                map.removeControl(routeControl); // Remove the route
+                tempMarkersLayer.clearLayers(); // Clear the temporary markers
+                map.off('click', clearOldRoute); // Unbind the event to avoid recursion
+            });
+        }
+    });
+}
+
+// Call the function to enable click-to-route functionality
+ enableClickToRoute(map);
+
+
+// const routeControl = L.Routing.control({
+//     waypoints: [
+//         L.latLng(36.2023038, 5.408276),
+//         L.latLng(36.2006936, 5.4088903)
+//     ],
+//     createMarker: function() { return null; }, // Disable routing machine's default markers
+//     lineOptions: {
+//         styles: [{ color: 'blue', weight: 4, opacity: 0.7 }]
+//     },
+//     routeWhileDragging: false
+// }).addTo(map);
+
+//routeControl()
+
+
+// right-click functionality to copy coords
+
+function enableRightClickToCopy(map) {
+    // Add contextmenu event listener to the map
+    map.on('contextmenu', function (e) {
+        // Get the coordinates of the right-clicked point
+        const lat = e.latlng.lat.toFixed(6); // Limit to 6 decimal places
+        const lng = e.latlng.lng.toFixed(6);
+
+        // Copy the coordinates to the clipboard
+        const coords = `${lat}, ${lng}`;
+        navigator.clipboard.writeText(coords).then(() => {
+            // Show a confirmation message
+            alert(`Coordinates copied to clipboard: ${coords}`);
+        }).catch(err => {
+            console.error('Failed to copy coordinates:', err);
+            alert('Failed to copy coordinates. Please try again.');
+        });
+    });
+}
+
+// Call the function to enable right-click functionality
+enableRightClickToCopy(map);
+
+
+// Function to add geolocation marker and circle
+// function addUserLocation(map) {
+//     // Check if the browser supports geolocation
+//     if (navigator.geolocation) {
+//         // Get the user's current position
+//         navigator.geolocation.getCurrentPosition(
+//             function (position) {
+//                 const userLat = position.coords.latitude;
+//                 const userLon = position.coords.longitude;
+
+//                 // Add a marker for the user's location
+//                 const userMarker = L.marker([userLat, userLon], {
+//                     icon: L.icon({
+//                         iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // Custom marker icon
+//                         iconSize: [30, 30],
+//                         iconAnchor: [15, 30]
+//                     })
+//                 }).addTo(map).bindPopup('You are here!').openPopup();
+
+//                 // Add a circle around the user's location
+//                 const userCircle = L.circle([userLat, userLon], {
+//                     color: 'blue',    // Circle border color
+//                     fillColor: '#3a7bd5', // Circle fill color
+//                     fillOpacity: 0.3, // Transparency of the fill
+//                     radius: 500       // Radius in meters
+//                 }).addTo(map);
+
+//                 // Pan the map to the user's location
+//                 map.setView([userLat, userLon], 14);
+//             },
+//             function (error) {
+//                 // Handle geolocation errors
+//                 console.error('Geolocation error:', error);
+//                 alert('Unable to retrieve your location. Please allow location access or try again.');
+//             }
+//         );
+//     } else {
+//         alert('Geolocation is not supported by your browser.');
+//     }
+// }
+
+// // Call the function to get and display the user's location
+// addUserLocation(map);
