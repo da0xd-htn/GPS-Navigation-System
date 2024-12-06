@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
 import csv
 import os
 import networkx as nx
@@ -67,6 +67,17 @@ def delete_point():
     return jsonify({"message": "Point deleted successfully!"})
 
 
+
+
+# Route to export coordinates as a CSV file
+@app.route("/api/export")
+def export_coordinates():
+    file_path = "/home/daoud/Desktop/Master1 IDTW/S1/AAC/MiniProjet/GPS-Navigation-System/data/coordinates.csv"  # Adjust this path if needed
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    else:
+        
+        return jsonify({"message": "File not found"}), 404
 
 
 

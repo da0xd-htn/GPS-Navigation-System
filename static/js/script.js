@@ -24,6 +24,11 @@ document.getElementById('clear-markers').addEventListener('click', function() {
     routingLayer.clearLayers();
 });
 
+// Export button
+document.getElementById('export-btn').addEventListener('click', function() {
+    window.location.href = '/api/export';  // Trigger the download
+});
+
 // Initialize marker layer for points of interest
 var markersLayer = L.layerGroup().addTo(map);
 

@@ -13,7 +13,7 @@
 </head>
 <body>
 <!-- Bootstrap Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">GPS Navigation</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,8 +24,8 @@
             <form class="d-flex mx-auto">
                 <input class="form-control me-2" type="search" placeholder="Enter Latitude, Longitude" aria-label="Search"  style="
                 width: 300px;
-                padding-left: 50px;
-            ">>
+                padding-left: 10px;
+            ">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
@@ -40,13 +40,15 @@
             <h2>Map Controls</h2>
             <button id="zoom-in" class="btn btn-info">Zoom In</button>
             <button id="zoom-out" class="btn btn-info">Zoom Out</button>
-            <button id="reset-map" class="btn btn-primary">Reset Map</button>
-            <button id="clear-markers" class="btn btn-primary">Clear Markers</button>
+            <button id="reset-map" class="btn btn-info">Reset Map</button>
+            <button id="clear-markers" class="btn btn-info">Clear Markers</button>
+             <!-- Export Button for downloading the CSV -->
+            <button id="export-btn" class="btn btn-success">Export Data</button>
 
             <div class="add-poi-container">
-                <h3 id="toggle-form" class="clickable-header">
+                <h6 id="toggle-form" class="clickable-header">
                     <i class="fas fa-chevron-down"></i> Add New Point
-                </h3>
+                </h6>
                 <form id="add-poi-form" style="display: none; margin-top: 10px;">
                     <div class="mb-2">
                         <label for="poi-lat" class="form-label">Latitude:</label>
@@ -63,6 +65,8 @@
                     <button type="submit" class="btn btn-success">Add Point</button>
                 </form>
             </div>
+            
+
             
             <h3>Points of Interest</h3>
             <ul id="poi-list">

@@ -6,19 +6,19 @@ body {
 
 .container {
     display: flex;
-    height: 120vh;
-    margin-top: 15px;
+    height: 130vh;
+    margin-top: 17px;
 }
 .sidebar {
     width: 320px;
     background-color: #f4f4f4;
-    border-right: 2px solid #f0cccc;
-    margin-left: -70px;
+    border-right: 3px solid #b19d9d;
+    margin-left: -60px;
 }
 
 /* Add margin to buttons */
 .sidebar button {
-    margin-bottom: 10px; /* Adds spacing between buttons */
+    margin-bottom: 15px; /* Adds spacing between buttons */
 }
 
 /* Add padding to list items in Points of Interest */
@@ -54,7 +54,7 @@ body {
     color: #007bff;
     padding: 10px 15px;
     border: 2px solid #007bff;
-    border-radius: 5px;
+    border-radius: 25px;
     background-color: #f8f9fa;
     display: inline-flex;
     align-items: center;
@@ -85,24 +85,25 @@ body {
 
 
 .delete-btn {
-    background-color: #ff0000;
+    background-color: #dc3545;
     color: white;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
     font-size: 12px;
     margin-left: 10px;
+    border-radius: 12px
 }
 
 .delete-btn:hover {
-    background-color: #cc0000;
+    background-color: #e62337;
 }
 
 
 .map-container {
     flex-grow: 1;
     position: relative;
-    margin-right: -70px;
+    margin-right: -85px;
     margin-left: 20px;
 
 }
@@ -111,5 +112,5 @@ footer {
     padding: 10px;
     background-color: #333;
     color: white;
-    margin-top: 500px;
+    margin-top: 300px;
 }
