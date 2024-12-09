@@ -305,7 +305,7 @@ document.querySelector('button[type="submit"]').addEventListener('click', functi
     }
 });
 
-
+// *******************************************************
 
 // Function to enable clicking on the map to add markers and draw a route
 function enableClickToRoute(map) {
@@ -348,19 +348,6 @@ function enableClickToRoute(map) {
  enableClickToRoute(map);
 
 
-// const routeControl = L.Routing.control({
-//     waypoints: [
-//         L.latLng(36.2023038, 5.408276),
-//         L.latLng(36.2006936, 5.4088903)
-//     ],
-//     createMarker: function() { return null; }, // Disable routing machine's default markers
-//     lineOptions: {
-//         styles: [{ color: 'blue', weight: 4, opacity: 0.7 }]
-//     },
-//     routeWhileDragging: false
-// }).addTo(map);
-
-//routeControl()
 
 
 // right-click functionality to copy coords
